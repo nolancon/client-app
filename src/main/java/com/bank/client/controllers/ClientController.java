@@ -69,7 +69,7 @@ public class ClientController {
     }
     
 	@PutMapping("/accounts/{id}")
-   	public Account updateAccount(@PathVariable("id") Long id, @RequestBody Account account) {
+   	public void updateAccount(@PathVariable("id") Long id, @RequestBody Account account) {
 		log.info("updateAccount called by client");
 
     	RestTemplate restTemplate = new RestTemplate();
@@ -80,9 +80,6 @@ public class ClientController {
 
         String serviceURI = String.format("%s/accounts/%s", serviceInstance.getUri().toString(), id);
         restTemplate.put(serviceURI, updatedAccount);
-        
-        updatedAccount.setId(id);
-        return updatedAccount;
     }
 
     @DeleteMapping("/accounts/{id}")
