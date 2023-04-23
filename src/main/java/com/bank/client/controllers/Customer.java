@@ -3,16 +3,16 @@ package com.bank.client.controllers;
 public class Customer {
     private Long id;
 
-    private String forename;
-    private String surname;
+    private String name;
+    private String branch;
     private String email;
 
     public Customer(){}
 
-    public Customer(String email, String forename, String surname) {    
-        this.forename = forename;
+    public Customer(String email, String name, String branch) {    
+        this.name = name;
     	this.email = email;
-    	this.surname = surname;
+    	this.branch = branch;
     }
 
     public Long getId(){
@@ -31,19 +31,19 @@ public class Customer {
         this.email = email;
     }
 
-    public String getForename(){
-        return forename;
+    public String getName(){
+        return name;
     }
 
-    public void setFirstName(String forename){
-        this.forename = forename;
+    public void setName(String name){
+        this.name = name;
     }
     
-    public String getSurName(){
-        return surname;
+    public String getBranch(){
+        return branch;
     }
 
-    public void setSurname(String surname){
-        this.surname = surname;
+    public void setBranch(String branch){
+        this.branch = branch;
     }
 }

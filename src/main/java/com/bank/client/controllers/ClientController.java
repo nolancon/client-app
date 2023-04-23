@@ -2,6 +2,8 @@ package com.bank.client.controllers;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -16,15 +18,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+
 @RestController
 public class ClientController {
-	
+	Logger log = LoggerFactory.getLogger(ClientController.class);
+
 	@Autowired
 	private DiscoveryClient discoveryClient;
 	
-
+    
 	@GetMapping("/accounts/{id}")
     public Account getAccountById(@PathVariable int id) {
+		log.info("getAccountById called by client");
+
 		RestTemplate restTemplate = new RestTemplate();
         ServiceInstance serviceInstance = getServiceInstance();
     
@@ -36,6 +42,8 @@ public class ClientController {
 	
 	@GetMapping("/accounts")
     public List<Account>  getAccounts() {
+		log.info("getAccounts called by client");
+
 		RestTemplate restTemplate = new RestTemplate();
         ServiceInstance serviceInstance = getServiceInstance();
     
@@ -48,6 +56,8 @@ public class ClientController {
 	
 	@PostMapping("/accounts")
     public Account createAccount(@RequestBody Account account) {
+		log.info("createAccount called by client");
+
 		RestTemplate restTemplate = new RestTemplate();
         ServiceInstance serviceInstance = getServiceInstance();
     
@@ -61,10 +71,67 @@ public class ClientController {
 
     @DeleteMapping("/accounts/{id}")
     public void deleteAccount(@PathVariable(value = "id") Long id){
+		log.info("deleteAccount called by client");
+
     	RestTemplate restTemplate = new RestTemplate();
         ServiceInstance serviceInstance = getServiceInstance();
     
         String serviceURI = String.format("%s/accounts/%s", serviceInstance.getUri().toString(), id);
+        restTemplate.delete(serviceURI);
+    }
+	
+    // Employee REST calls
+    
+    @GetMapping("/employees/{id}")
+    public Employee getEmployesById(@PathVariable int id) {
+		log.info("getEmployeesById called by client");
+
+		RestTemplate restTemplate = new RestTemplate();
+        ServiceInstance serviceInstance = getServiceInstance();
+    
+        
+        String serviceURI = String.format("%s/employees/%s", serviceInstance.getUri().toString(), id);
+        ResponseEntity<Employee> restExchange = restTemplate.exchange(serviceURI, HttpMethod.GET, null, Employee.class);
+        return restExchange.getBody();
+    }
+	
+	@GetMapping("/employees")
+    public List<Employee>  getEmployees() {
+		log.info("getEmployees called by client");
+
+		RestTemplate restTemplate = new RestTemplate();
+        ServiceInstance serviceInstance = getServiceInstance();
+    
+        String serviceURI = String.format("%s/employees", serviceInstance.getUri().toString());
+        ResponseEntity<List<Employee>> restExchange = restTemplate.exchange(serviceURI, HttpMethod.GET, null, new ParameterizedTypeReference<List<Employee>>(){});
+        
+        return restExchange.getBody();
+    }
+	
+	
+	@PostMapping("/employees")
+    public Employee createEmployee(@RequestBody Employee employee) {
+		log.info("createEmployee called by client");
+
+		RestTemplate restTemplate = new RestTemplate();
+        ServiceInstance serviceInstance = getServiceInstance();
+    
+        String serviceURI = String.format("%s/employees", serviceInstance.getUri().toString());
+        ResponseEntity<Employee> restExchange = restTemplate.postForEntity(serviceURI, employee, Employee.class);
+        
+        return restExchange.getBody();
+    }
+    
+    
+
+    @DeleteMapping("/employees/{id}")
+    public void deleteEmployee(@PathVariable(value = "id") Long id){
+		log.info("deleteEmployee called by client");
+
+    	RestTemplate restTemplate = new RestTemplate();
+        ServiceInstance serviceInstance = getServiceInstance();
+    
+        String serviceURI = String.format("%s/employees/%s", serviceInstance.getUri().toString(), id);
         restTemplate.delete(serviceURI);
     }
 	
