@@ -14,9 +14,10 @@ public class Account
 
     public Account(){}
 
-    public Account(String type, Long balance){
+    public Account(String type, Long balance, Customer customer){
         this.type = type;
         this.balance = balance;
+        this.customer = customer;
     }
 
     public Long getId() {

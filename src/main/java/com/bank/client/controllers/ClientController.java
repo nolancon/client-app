@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -67,7 +68,22 @@ public class ClientController {
         return restExchange.getBody();
     }
     
-    
+	@PutMapping("/accounts/{id}")
+   	public Account updateAccount(@PathVariable("id") Long id, @RequestBody Account account) {
+		log.info("updateAccount called by client");
+
+    	RestTemplate restTemplate = new RestTemplate();
+        ServiceInstance serviceInstance = getServiceInstance();
+
+        Account updatedAccount = new Account(account.getType(), account.getBalance(), account.getCustomer());
+		log.info("updated account created");
+
+        String serviceURI = String.format("%s/accounts/%s", serviceInstance.getUri().toString(), id);
+        restTemplate.put(serviceURI, updatedAccount);
+        
+        updatedAccount.setId(id);
+        return updatedAccount;
+    }
 
     @DeleteMapping("/accounts/{id}")
     public void deleteAccount(@PathVariable(value = "id") Long id){
@@ -83,7 +99,7 @@ public class ClientController {
     // Employee REST calls
     
     @GetMapping("/employees/{id}")
-    public Employee getEmployesById(@PathVariable int id) {
+    public Employee getEmployeeById(@PathVariable int id) {
 		log.info("getEmployeesById called by client");
 
 		RestTemplate restTemplate = new RestTemplate();
@@ -108,6 +124,20 @@ public class ClientController {
         return restExchange.getBody();
     }
 	
+	@PutMapping("/employees/{id}")
+   	public Employee updateEmployee(@PathVariable("id") Long id, @RequestBody Employee employee) {
+		log.info("updateEmployee called by client");
+
+    	RestTemplate restTemplate = new RestTemplate();
+        ServiceInstance serviceInstance = getServiceInstance();
+
+        Employee updatedEmployee = new Employee(employee.getName(), employee.getTitle(), employee.getSalary());
+        
+        String serviceURI = String.format("%s/employees/%s", serviceInstance.getUri().toString(), id);
+        restTemplate.put(serviceURI, updatedEmployee);
+        updatedEmployee.setId(id);
+        return updatedEmployee;
+    }
 	
 	@PostMapping("/employees")
     public Employee createEmployee(@RequestBody Employee employee) {
